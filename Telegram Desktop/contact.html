@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact – Milind Rathod</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background: #eff1f5;
+      color: #4c4f69;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .contact-container {
+      background: #e6e9ef;
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 6px 6px 12px #dce0e8, -6px -6px 12px #ffffff;
+      max-width: 480px;
+      width: 100%;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .contact-container h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #1e1e2e;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    input, textarea {
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #dce0e8;
+      color: #4c4f69;
+      box-shadow: inset 2px 2px 5px #cbd0d8, inset -2px -2px 5px #ffffff;
+      resize: none;
+    }
+
+    input:focus, textarea:focus {
+      outline: 2px solid #8839ef;
+    }
+
+    button {
+      background: #8839ef;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #7c2ae8;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contact-container">
+    <h1>Contact Me</h1>
+    <form action="https://formspree.io/f/your-form-id" method="POST">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email" required>
+      <textarea name="message" rows="5" placeholder="Your message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -1,159 +1,385 @@
-// Tilt effect for photo cards only
-const photoCards = document.querySelectorAll('#galleryContent .card');
-photoCards.forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const deltaX = e.clientX - centerX;
-    const deltaY = e.clientY - centerY;
-    const rotateX = (deltaY / rect.height) * -20;
-    const rotateY = (deltaX / rect.width) * 20;
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  });
-  
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'rotateX(0deg) rotateY(0deg)';
-  });
-});
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-// Section control
-const gallery = document.getElementById('galleryContent');
-const videoEditing = document.getElementById('video-editing-section');
-const aboutWrap = document.getElementById('about-section');
-const contactSection = document.getElementById('contact-section');
-const aboutBtn = document.getElementById('loadAbout');
-const photoBtn = document.getElementById('showGallery');
-const videoBtn = document.getElementById('showVideoEditing');
-const contactBtn = document.getElementById('showContact');
-
-const navLinks = document.querySelectorAll('.nav-link, .nav-header');
-
-function clearActiveLinks() {
-  navLinks.forEach(link => link.classList.remove('active'));
+body {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  color: #2c2f42;
+  background: #eff1f5;
 }
 
-function showLegend(show) {
-  const toggle = document.getElementById('legendToggle');
-  const panel = document.getElementById('legendPanel');
-  if (!toggle) return;
+a { color: inherit; text-decoration: none; }
 
-  toggle.style.display = show ? 'flex' : 'none';
-  if (!show && panel) panel.style.display = 'none';
+.container {
+  display: flex;
+  min-height: 100vh;
 }
 
-// About section
-aboutBtn.addEventListener('click', e => {
-  e.preventDefault();
-  gallery.style.display = 'none';
-  videoEditing.style.display = 'none';
-  contactSection.style.display = 'none';
-  aboutWrap.style.display = 'block';
-
-  clearActiveLinks();
-  aboutBtn.classList.add('active');
-  showLegend(true);
-});
-
-// Photography section with fade animation
-photoBtn.addEventListener('click', e => {
-  e.preventDefault();
-  aboutWrap.style.display = 'none';
-  videoEditing.style.display = 'none';
-  contactSection.style.display = 'none';
-
-  // Reset animation
-  gallery.classList.remove('fade');
-  void gallery.offsetWidth; // Trigger reflow
-  gallery.classList.add('fade');
-
-  gallery.style.display = 'block';
-
-  clearActiveLinks();
-  photoBtn.classList.add('active');
-  showLegend(false);
-});
-
-// Video Editing section
-videoBtn.addEventListener('click', e => {
-  e.preventDefault();
-  aboutWrap.style.display = 'none';
-  gallery.style.display = 'none';
-  contactSection.style.display = 'none';
-
-  // Reset animation
-  videoEditing.classList.remove('fade');
-  void videoEditing.offsetWidth; // Trigger reflow
-  videoEditing.classList.add('fade');
-
-  videoEditing.style.display = 'block';
-
-  clearActiveLinks();
-  videoBtn.classList.add('active');
-  showLegend(false);
-});
-
-// Contact section
-contactBtn.addEventListener('click', e => {
-  e.preventDefault();
-  aboutWrap.style.display = 'none';
-  gallery.style.display = 'none';
-  videoEditing.style.display = 'none';
-
-  // Reset animation
-  contactSection.classList.remove('fade');
-  void contactSection.offsetWidth; // Trigger reflow
-  contactSection.classList.add('fade');
-
-  contactSection.style.display = 'block';
-
-  clearActiveLinks();
-  contactBtn.classList.add('active');
-  showLegend(false);
-});
-
-// Form submission
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-  contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Show success message
-    const submitBtn = this.querySelector('.submit-btn');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    
-    // Simulate form submission (in production, this would be a real fetch request)
-    setTimeout(() => {
-      submitBtn.textContent = 'Message Sent!';
-      setTimeout(() => {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-        this.reset();
-      }, 2000);
-    }, 1000);
-  });
+.sidebar {
+  width: 190px;
+  background: #eff1f5;
+  padding: 60px 20px 60px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  border-right: 1px solid #dce0e8;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
-// Legend toggle
-const toggle = document.getElementById('legendToggle');
-const panel = document.getElementById('legendPanel');
+.nav-header {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #dce0e8;
+  color: #c71632;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}  
 
-if (toggle && panel) {
-  toggle.addEventListener('click', e => {
-    e.stopPropagation();
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-  });
-
-  document.addEventListener('click', e => {
-    if (!panel.contains(e.target) && e.target !== toggle) {
-      panel.style.display = 'none';
-    }
-  });
+.nav-link {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #e6e9ef;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  text-align: center;
 }
 
-// Set initial state
-clearActiveLinks();
-photoBtn.classList.add('active');
-showLegend(false);
+.nav-link:hover {
+  background: #d1d5db;
+  color: #1e1e2e;
+}
+
+.nav-link.active {
+  background: #d1d5db;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.content {
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+  color: #1e1e2e;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  perspective: 800px;
+}
+
+.card {
+  height: 280px;
+  background: #e6e9ef;
+  overflow: hidden;
+  transition: transform 0.1s ease;
+  transform-style: preserve-3d;
+  box-shadow: 6px 6px 10px #dce0e8, -6px -6px 10px #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+  display: block;
+  border-radius: 12px;
+}
+
+.video-card {
+  position: relative;
+  height: 280px;
+  background: #e6e9ef;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 6px 6px 10px #dce0e8, -6px -6px 10px #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.video-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
+}
+
+.video-card:hover .video-thumbnail {
+  transform: scale(1.05);
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.video-card:hover .video-overlay {
+  background: rgba(0,0,0,0.5);
+}
+
+.play-icon {
+  color: white;
+  font-size: 3rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.video-card iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#contact-section {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.contact-form {
+  background: #e6e9ef;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 6px 6px 10px #dce0e8, -6px -6px 10px #ffffff;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #3c3f58;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dce0e8;
+  border-radius: 8px;
+  background: #eff1f5;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+textarea.form-control {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.submit-btn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #6b2ad6;
+  transform: translateY(-2px);
+}
+
+.contact-info {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #3c3f58;
+}
+
+.contact-method svg {
+  width: 20px;
+  height: 20px;
+  fill: #7c3aed;
+}
+
+#about-section {
+  display: none;
+  padding: 100px 80px 60px 80px;
+  animation: fadeIn 0.4s ease forwards;
+  width: 100%;
+}
+
+#video-editing-section {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+  width: 100%;
+}
+
+.fade {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.about-title {
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: #1e1e2e;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.about-title::before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  top: 0.4rem;
+  width: 4px;
+  height: 2.4rem;
+  background: #7c3aed;
+  border-radius: 2px;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: #3c3f58;
+  max-width: 740px;
+  margin-bottom: 60px;
+}
+
+.skills {
+  display: flex;
+  gap: 36px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.skill {
+  width: 96px;
+  height: 96px;
+  background: #e6e9ef;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+.skill:hover {
+  transform: translateY(-6px) rotate(3deg);
+  background: #dce0e8;
+}
+
+.skill svg {
+  width: 46px;
+  height: 46px;
+}
+
+.legend-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #dce0e8;
+  color: #7c3aed;
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 20px 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: -2px 2px 6px rgba(0,0,0,0.05);
+}
+
+.legend-panel {
+  position: fixed;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e6e9ef;
+  border-radius: 12px;
+  padding: 18px 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: none;
+  z-index: 1000;
+  min-width: 200px;
+  color: #3c3f58;
+  font-size: 0.9rem;
+}
+
+.legend-panel h4 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.legend-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legend-panel li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-icon {
+  font-weight: bold;
+  min-width: 24px;
+  display: inline-block;
+}
